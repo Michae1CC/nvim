@@ -32,15 +32,22 @@ return require('packer').startup(function(use)
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
-	use({'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'})
-	use('nvim-treesitter/playground')
-	use('p00f/nvim-ts-rainbow')
-	use('theprimeagen/harpoon')
-	use('mbbill/undotree')
-	use('tpope/vim-fugitive')
-	use('christoomey/vim-tmux-navigator')
-	use('tpope/vim-surround')
-	use('numToStr/Comment.nvim')
+    use({'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'})
+    use('nvim-treesitter/playground')
+    use('p00f/nvim-ts-rainbow')
+    use('theprimeagen/harpoon')
+    use('mbbill/undotree')
+    use('tpope/vim-fugitive')
+    use('christoomey/vim-tmux-navigator')
+    use('tpope/vim-surround')
+    -- lua functions that many plugins use
+    use("nvim-lua/plenary.nvim")
+    -- commenting with gc
+    use("numToStr/Comment.nvim")
+    -- file explorer
+    use("nvim-tree/nvim-tree.lua")
+    -- vscode file icons
+    use("kyazdani42/nvim-web-devicons")
 
 	use {
 		'VonHeikemen/lsp-zero.nvim',
