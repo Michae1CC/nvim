@@ -38,6 +38,9 @@ return require('packer').startup(function(use)
 	use('theprimeagen/harpoon')
 	use('mbbill/undotree')
 	use('tpope/vim-fugitive')
+	use('christoomey/vim-tmux-navigator')
+	use('tpope/vim-surround')
+	use('numToStr/Comment.nvim')
 
 	use {
 		'VonHeikemen/lsp-zero.nvim',
