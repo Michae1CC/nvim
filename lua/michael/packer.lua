@@ -48,6 +48,8 @@ return require('packer').startup(function(use)
     use("nvim-tree/nvim-tree.lua")
     -- vscode file icons
     use("kyazdani42/nvim-web-devicons")
+    use("kyazdani42/nvim-web-devicons")
+    use("nvim-lualine/lualine.nvim")
 
 	use {
 		'VonHeikemen/lsp-zero.nvim',
