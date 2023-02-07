@@ -1,5 +1,29 @@
 local lsp = require("lsp-zero")
 
+-- import lspsaga plugin safely
+local lspsaga_status, lspsaga = pcall(require, "lspsaga")
+if not lspsaga_status then
+  return
+end
+
+-- import lspconfig plugin safely
+local lspconfig_status, lspconfig = pcall(require, "lspconfig")
+if not lspconfig_status then
+  return
+end
+
+-- import cmp-nvim-lsp plugin safely
+local cmp_nvim_lsp_status, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if not cmp_nvim_lsp_status then
+  return
+end
+
+-- import typescript plugin safely
+local typescript_setup, typescript = pcall(require, "typescript")
+if not typescript_setup then
+  return
+end
+
 lsp.preset("recommended")
 
 lsp.ensure_installed({
@@ -51,7 +75,15 @@ lsp.on_attach(function(client, bufnr)
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
+
+  -- Go to definition
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+  -- Peek definition
+  vim.keymap.set("n", "gD", "<cmd>Lspsaga peek_definition<CR>", opts)
+  -- show definition, references
+  vim.keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts)
+  -- go to implementation
+  vim.keymap.set("n", "gi", vim.lsp.buf.hover(), opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
   vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
@@ -61,9 +93,33 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+
+  -- typescript specific keymaps (e.g. rename file and update imports)
+  if client.name == "tsserver" then
+      vim.keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
+      vim.keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
+      vim.keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
+  end
 end)
 
+-- used to enable autocompletion (assign to every lsp server config)
+local capabilities = cmp_nvim_lsp.default_capabilities()
+
 lsp.setup()
+lspsaga.setup({
+  -- keybinds for navigation in lspsaga window
+  scroll_preview = { scroll_down = "<C-f>", scroll_up = "<C-b>" },
+  -- use enter to open file with definition preview
+  definition = {
+    edit = "<CR>",
+  },
+})
+-- configure typescript server with plugin
+typescript.setup({
+  server = {
+    capabilities = capabilities,
+  },
+})
 
 vim.diagnostic.config({
     virtual_text = true
