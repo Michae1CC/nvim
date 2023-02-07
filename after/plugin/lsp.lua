@@ -1,5 +1,11 @@
 local lsp = require("lsp-zero")
 
+-- import typescript plugin safely
+local typescript_setup, typescript = pcall(require, "typescript")
+if not typescript_setup then
+  return
+end
+
 -- import lspsaga plugin safely
 local lspsaga_status, lspsaga = pcall(require, "lspsaga")
 if not lspsaga_status then
@@ -18,9 +24,9 @@ if not cmp_nvim_lsp_status then
   return
 end
 
--- import typescript plugin safely
-local typescript_setup, typescript = pcall(require, "typescript")
-if not typescript_setup then
+-- import null-ls plugin safely
+local setup, null_ls = pcall(require, "null-ls")
+if not setup then
   return
 end
 
@@ -70,7 +76,7 @@ lsp.set_preferences({
     }
 })
 
-lsp.on_attach(function(client, bufnr)
+local on_attach = function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}
 
   -- Mappings.
@@ -83,7 +89,7 @@ lsp.on_attach(function(client, bufnr)
   -- show definition, references
   vim.keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts)
   -- go to implementation
-  vim.keymap.set("n", "gi", vim.lsp.buf.hover(), opts)
+  vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
   vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
@@ -93,14 +99,9 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+end
 
-  -- typescript specific keymaps (e.g. rename file and update imports)
-  if client.name == "tsserver" then
-      vim.keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
-      vim.keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
-      vim.keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
-  end
-end)
+lsp.on_attach(on_attach);
 
 -- used to enable autocompletion (assign to every lsp server config)
 local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -114,13 +115,98 @@ lspsaga.setup({
     edit = "<CR>",
   },
 })
+
+-- configure css server
+lspconfig["cssls"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
+-- configure tailwindcss server
+lspconfig["tailwindcss"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
+-- configure emmet language server
+lspconfig["emmet_ls"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+  filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+})
+
+-- configure lua server (with special settings)
+lspconfig["sumneko_lua"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = { -- custom settings for lua
+    Lua = {
+      -- make the language server recognize "vim" global
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        -- make language server aware of runtime files
+        library = {
+          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+          [vim.fn.stdpath("config") .. "/lua"] = true,
+        },
+      },
+    },
+  },
+})
+
 -- configure typescript server with plugin
 typescript.setup({
   server = {
     capabilities = capabilities,
+    on_attach = on_attach,
   },
 })
 
 vim.diagnostic.config({
     virtual_text = true
+})
+
+-- for conciseness
+local formatting = null_ls.builtins.formatting -- to setup formatters
+local diagnostics = null_ls.builtins.diagnostics -- to setup linters
+
+-- to setup format on save
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+-- configure null_ls
+null_ls.setup({
+  -- setup formatters & linters
+  sources = {
+    --  to disable file types use
+    --  "formatting.prettier.with({disabled_filetypes: {}})" (see null-ls docs)
+    formatting.prettier, -- js/ts formatter
+    formatting.stylua, -- lua formatter
+    diagnostics.eslint_d.with({ -- js/ts linter
+      -- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
+      condition = function(utils)
+        return utils.root_has_file(".eslintrc.js") -- change file extension if you use something else
+      end,
+    }),
+  },
+  -- configure format on save
+  on_attach = function(current_client, bufnr)
+    if current_client.supports_method("textDocument/formatting") then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({
+            filter = function(client)
+              --  only use null-ls for formatting instead of lsp server
+              return client.name == "null-ls"
+            end,
+            bufnr = bufnr,
+          })
+        end,
+      })
+    end
+  end,
 })
