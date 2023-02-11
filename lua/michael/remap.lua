@@ -31,6 +31,21 @@ vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
+vim.keymap.set("n", "<C-w>l", [[<cmd>vertical resize +5<cr>]], { desc = "make the window biger vertically" })
+vim.keymap.set("n", "<C-w>h", [[<cmd>vertical resize -5<cr>]], { desc = "make the window smaller vertically" })
+vim.keymap.set(
+	"n",
+	"<C-w>k",
+	[[<cmd>horizontal resize +2<cr>]],
+	{ desc = "make the window bigger horizontally by pressing shift and =" }
+)
+vim.keymap.set(
+	"n",
+	"<C-w>j",
+	[[<cmd>horizontal resize -2<cr>]],
+	{ desc = "make the window smaller horizontally by pressing shift and -" }
+)
+
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 

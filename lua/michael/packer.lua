@@ -92,6 +92,10 @@ return require("packer").startup(function(use)
 		end,
 	})
 
+	-- packages for git
+	use("lewis6991/gitsigns.nvim")
+	use("dinhhuy258/git.nvim") -- Used for git blame
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end
