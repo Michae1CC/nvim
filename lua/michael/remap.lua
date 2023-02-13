@@ -37,13 +37,13 @@ vim.keymap.set(
 	"n",
 	"<C-w>k",
 	[[<cmd>horizontal resize +2<cr>]],
-	{ desc = "make the window bigger horizontally by pressing shift and =" }
+	{ desc = "make the window bigger horizontally by pressing  and =" }
 )
 vim.keymap.set(
 	"n",
 	"<C-w>j",
 	[[<cmd>horizontal resize -2<cr>]],
-	{ desc = "make the window smaller horizontally by pressing shift and -" }
+	{ desc = "make the window smaller horizontally by pressing  and -" }
 )
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])

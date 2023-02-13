@@ -3,9 +3,9 @@ vim.opt.nu = true
 vim.opt.relativenumber = true
 
 -- tabs and indentation
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.autoindent = true
 
@@ -43,4 +43,3 @@ vim.opt.splitbelow = true
 -- update time, the length of Vim waits before you stop
 -- typing before it triggers it triggers the plugin governed by setting
 vim.opt.updatetime = 500
-
