@@ -34,12 +34,12 @@ lsp.preset("recommended")
 
 lsp.ensure_installed({
 	"tsserver",
-	"sumneko_lua",
+  "lua_ls",
 	"rust_analyzer",
 })
 
 -- Fix Undefined global 'vim'
-lsp.configure("sumneko_lua", {
+lsp.configure("lua_ls", {
 	settings = {
 		Lua = {
 			diagnostics = {
@@ -155,7 +155,7 @@ lspconfig["emmet_ls"].setup({
 })
 
 -- configure lua server (with special settings)
-lspconfig["sumneko_lua"].setup({
+lspconfig["lua_ls"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 	settings = { -- custom settings for lua
