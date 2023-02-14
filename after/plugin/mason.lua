@@ -33,7 +33,7 @@ mason_lspconfig.setup({
 		"jdtls",
 		"ltex",
 		"marksman",
-		"pylsp",
+		"pyright",
 		"rust_analyzer",
 		"tsserver",
 		"html",
@@ -49,6 +49,11 @@ mason_lspconfig.setup({
 mason_null_ls.setup({
 	-- list of formatters & linters for mason to install
 	ensure_installed = {
+		"cpplint",
+		"gitlint",
+		"ktlint",
+		"proselint",
+		"black",
 		"prettier", -- ts/js formatter
 		"stylua", -- lua formatter
 		"eslint_d", -- ts/js linter

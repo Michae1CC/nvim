@@ -34,7 +34,7 @@ lsp.preset("recommended")
 
 lsp.ensure_installed({
 	"tsserver",
-  "lua_ls",
+	"lua_ls",
 	"rust_analyzer",
 })
 
@@ -127,12 +127,16 @@ local capabilities = cmp_nvim_lsp.default_capabilities()
 
 lsp.setup()
 lspsaga.setup({
-	-- keybinds for navigation in lspsaga window
-	scroll_preview = { scroll_down = "<C-f>", scroll_up = "<C-b>" },
 	-- use enter to open file with definition preview
 	definition = {
 		edit = "<CR>",
 	},
+})
+
+-- configure python server
+lspconfig["pyright"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
 })
 
 -- configure css server
@@ -202,6 +206,7 @@ null_ls.setup({
 		--  "formatting.prettier.with({disabled_filetypes: {}})" (see null-ls docs)
 		formatting.prettier, -- js/ts formatter
 		formatting.stylua, -- lua formatter
+		formatting.black, -- python formatter
 		diagnostics.eslint_d.with({ -- js/ts linter
 			-- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
 			condition = function(utils)
