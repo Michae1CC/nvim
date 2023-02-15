@@ -114,6 +114,11 @@ _G.packer_plugins = {
     path = "/Users/michaelciccotosto-camp/.local/share/nvim/site/pack/packer/start/dracula.nvim",
     url = "https://github.com/Mofiqul/dracula.nvim"
   },
+  ["editorconfig-vim"] = {
+    loaded = true,
+    path = "/Users/michaelciccotosto-camp/.local/share/nvim/site/pack/packer/start/editorconfig-vim",
+    url = "https://github.com/editorconfig/editorconfig-vim"
+  },
   ["friendly-snippets"] = {
     loaded = true,
     path = "/Users/michaelciccotosto-camp/.local/share/nvim/site/pack/packer/start/friendly-snippets",

@@ -96,6 +96,9 @@ return require("packer").startup(function(use)
 	use("lewis6991/gitsigns.nvim")
 	use("dinhhuy258/git.nvim") -- Used for git blame
 
+	-- editor config
+	use("editorconfig/editorconfig-vim")
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end
