@@ -84,6 +84,9 @@ return require("packer").startup(function(use)
 	use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
 	use("jayp0521/mason-null-ls.nvim") -- bridges gap b/w mason & null-ls
 
+	-- vim be good
+	use("ThePrimeagen/vim-be-good") -- bridges gap b/w mason & null-ls
+
 	-- Taken from:https://github.com/windwp/nvim-autopairs
 	use({
 		"windwp/nvim-autopairs",
